@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vállalkozásvezetési és Szállodaipari Kvíz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .option-btn:disabled { cursor: not-allowed; }
+        .animate-fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-900">
+
+<div id="app" class="max-w-2xl mx-auto px-4 py-8 md:py-12">
+    <!-- Ide kerül az alkalmazás -->
+</div>
+
+<script>
+    const quizData = [
+        {
+            question: "Melyik gazdasági társasági formánál kötelező a tagok korlátlan és egyetemleges felelősségvállalása a társaság kötelezettségeiért?",
+            options: ["Közkereseti társaság (Kkt.)", "Korlátolt felelősségű társaság (Kft.)", "Részvénytársaság (Rt.)", "Betéti társaság (Bt.) kültagja"],
+            correct: 0,
+            rationale: "A Kkt. alapvető jellemzője, hogy minden tag korlátlanul és egyetemlegesen felel a saját vagyonával is.",
+            hint: "Gondolj a személyegyesítő társaságok legkockázatosabb formájára."
+        },
+        {
+            question: "Mekkora a minimális törzstőke egy Korlátolt felelősségű társaság (Kft.) alapításakor a magyar szabályozás szerint?",
+            options: ["500 000 Ft", "3 millió Ft", "5 millió Ft", "20 millió Ft"],
+            correct: 1,
+            rationale: "A 4. tétel alapján a Kft. alapításához szükséges minimális törzstőke összege 3 millió forint.",
+            hint: "Ez egy hét számjegyű összeg, ami 3-assal kezdődik."
+        },
+        {
+            question: "Melyik állítás igaz a Betéti társaság (Bt.) beltagjára?",
+            options: ["Felelőssége csak a vagyoni betétje erejéig terjed.", "Nem köteles részt venni a társaság munkájában.", "Felelőssége teljes, korlátlan és egyetemleges.", "Csak tőkét biztosít, de nem irányíthatja a céget."],
+            correct: 2,
+            rationale: "A Bt. beltagja ugyanúgy felel a magánvagyonával, mint egy Kkt. tagja.",
+            hint: "A beltag vállalja a legnagyobb kockázatot a Bt.-ben."
+        },
+        {
+            question: "Az emberi erőforrás menedzsment (HR) szerint miért nevezzük az embert 'stratégiai erőforrásnak'?",
+            options: ["Mert bármikor pótolható gépekkel.", "Mert képességei és tudása versenyelőnyt biztosítanak a vállalatnak.", "Mert a munkabér a legnagyobb költségtényező.", "Mert a munkavállalók a vállalat tulajdonát képezik."],
+            correct: 1,
+            rationale: "Az emberi tőke (tudás, készségek) az innováció és a hatékony működés alapja.",
+            hint: "Gondolj a versenyképességre és az egyedi tudásra."
+        },
+        {
+            question: "Melyik folyamat célja a jelentkezők közül a munkakörre legalkalmasabb személy kiválasztása?",
+            options: ["Toborzás", "Kiválasztás", "Munkakör-tervezés", "Fluktuációkezelés"],
+            correct: 1,
+            rationale: "A kiválasztás során dől el interjúk és tesztek alapján, hogy ki kapja meg az állást.",
+            hint: "Ez a lépés követi a toborzást és interjúkat is tartalmaz."
+        },
+        {
+            question: "Mit jelent a vállalat gazdálkodásában a 'fedezeti pont' (break-even point)?",
+            options: ["Azt a pontot, ahol a nyereség a maximális.", "Azt a bevételi szintet, ahol az összes bevétel megegyezik az összes költséggel.", "A társasági adó befizetésének határidejét.", "A változó költségek és a fix költségek összegét."],
+            correct: 1,
+            rationale: "Ebben a pontban az eredmény nulla, a vállalat se nem nyereséges, se nem veszteséges.",
+            hint: "Gondolj a 'nullszaldós' állapotra."
+        },
+        {
+            question: "Hogyan csoportosítjuk a költségeket, ha azt vizsgáljuk, hogy azok hogyan változnak a termelés volumenének függvényében?",
+            options: ["Közvetlen és közvetett költségek", "Anyag- és bérköltségek", "Fix és változó költségek", "Üzemi és rendkívüli költségek"],
+            correct: 2,
+            rationale: "A fix költségek függetlenek a volumentől, a változók pedig követik azt.",
+            hint: "Egyikük állandó, a másik követi a gyártott mennyiséget."
+        },
+        {
+            question: "Melyik marketing modell részei a Szegmentálás, Targetálás és Pozícionálás?",
+            options: ["4P modell", "SWOT analízis", "STP marketing", "PESTIS elemzés"],
+            correct: 2,
+            rationale: "Az elnevezés közvetlenül a Segmentation, Targeting, Positioning szavak kezdőbetűiből áll.",
+            hint: "Nézd meg a szavak kezdőbetűit!"
+        },
+        {
+            question: "Mi a különbség a primer és a szekunder piackutatás között?",
+            options: ["A primer olcsóbb, a szekunder drágább.", "A primer saját adatgyűjtést jelent, a szekunder már meglévő adatok elemzését.", "A primer csak online, a szekunder csak offline végezhető.", "Nincs köztük érdemi különbség."],
+            correct: 1,
+            rationale: "A primer kutatás friss információkat hoz, a szekunder korábbi statisztikákra épít.",
+            hint: "Gondolj arra, hogy ki gyűjti az adatokat először."
+        },
+        {
+            question: "Mit fejez ki az 'értékajánlat' (Value Proposition) egy vállalkozás számára?",
+            options: ["A termék előállítási költségét.", "Azt az okot, amiért a fogyasztó megveszi a terméket.", "A vállalat tőzsdei értékét.", "Az alkalmazottak havi fizetését."],
+            correct: 1,
+            rationale: "Ez az egyedi előny vagy megoldás, amit a termék nyújt a vásárlónak.",
+            hint: "Miért téged választ a vevő a versenytárs helyett?"
+        },
+        {
+            question: "A Lean Startup szemléletben mit jelent az MVP mozaikszó?",
+            options: ["Maximum Value Product", "Minimum Viable Product (Minimum Életképes Termék)", "Most Valuable Player", "Marketing Validált Platform"],
+            correct: 1,
+            rationale: "Ez a termék legkorábbi változata, amivel már tesztelni lehet a piaci igényeket.",
+            hint: "A legkisebb ráfordítással készülő, még használható termék."
+        },
+        {
+            question: "Mi a különbség az eredményesség és a hatékonyság között?",
+            options: ["A két fogalom jelentése teljesen azonos.", "Az eredményesség a cél elérését, a hatékonyság az erőforrás-felhasználást méri.", "Az eredményesség csak pénzben mérhető.", "A hatékonyság a fontosabb."],
+            correct: 1,
+            rationale: "Eredményes vagy, ha elérted a célt; hatékony, ha ezt kevés ráfordítással tetted meg.",
+            hint: "Gondolj a 'mit értünk el' vs 'mennyiből értük el' kérdésekre."
+        },
+        {
+            question: "Melyik a magyar családi vállalkozások egyik legkritikusabb kihívása napjainkban?",
+            options: ["A túl sok írásos stratégia.", "A generációváltás és az utódlás megoldatlansága.", "A túl alacsony lojalitás.", "A túl professzionális menedzsment."],
+            correct: 1,
+            rationale: "Sok cégvezető nem készül fel időben az irányítás átadására a gyermekeinek.",
+            hint: "Mi történik, ha az alapító nyugdíjba megy?"
+        },
+        {
+            question: "Mit nevezünk 'paternalista' vezetői stílusnak a családi vállalkozásoknál?",
+            options: ["Demokratikus döntéshozatalt.", "Amikor minden döntést az alapító vezető hoz meg egyedül.", "Amikor külsős szakmai menedzser irányít.", "Egy modern IT rendszert."],
+            correct: 1,
+            rationale: "Az ilyen vezető atyáskodó, de mindent kontroll alatt tart, gátolva az önállóságot.",
+            hint: "A szó latin 'pater' (apa) tövéből ered."
+        },
+        {
+            question: "Hány csillag között osztályozzák a szállodákat a minőségük alapján?",
+            options: ["1–3 csillag", "1–5 csillag", "3–5 csillag", "1–10 csillag"],
+            correct: 1,
+            rationale: "A 12. tétel szerint az 1 csillagtól az 5 csillagos luxus kategóriáig terjed a skála.",
+            hint: "Gondolj a hotelek szokásos értékelési rendszerére."
+        },
+        {
+            question: "Melyik részleg feladata a szállodában a vendégek be- és kijelentkeztetése?",
+            options: ["Housekeeping", "Front Office (Recepció)", "Marketing", "Karbantartás"],
+            correct: 1,
+            rationale: "Itt történik az adminisztráció, a vendégfogadás és a pénzügyi tranzakciók egy része.",
+            hint: "Ez a szálloda 'arca', amivel a vendég először találkozik."
+        },
+        {
+            question: "Mit jelent a szállodaiparban használt PMS mozaikszó?",
+            options: ["Private Message System", "Property Management System", "Price Monitoring Software", "Personal Marketing Service"],
+            correct: 1,
+            rationale: "Ez az a szoftver, amely összeköti a részlegeket és kezeli a foglalásokat.",
+            hint: "Egy szoftveres rendszer, ami a szálloda 'agyát' jelenti."
+        },
+        {
+            question: "Melyik két szállodai részleg közötti kommunikáció a legkritikusabb a gyors 'szobaforgás' érdekében?",
+            options: ["Konyha és Karbantartás", "Front Office és Housekeeping", "Igazgatás és Biztonság", "Wellness és Értékesítés"],
+            correct: 1,
+            rationale: "A recepciónak tudnia kell, melyik szobát takarították ki, hogy odaadhassa a kulcsot a vendégnek.",
+            hint: "Gondolj a recepcióra és a takarítókra."
+        },
+        {
+            question: "Melyik eredménykategóriát kapjuk meg, ha az üzemi eredményhez hozzáadjuk a pénzügyi műveletek eredményét?",
+            options: ["Adózott eredmény", "Szokásos vállalkozási eredmény", "Mérleg szerinti eredmény", "Bruttó árbevétel"],
+            correct: 1,
+            rationale: "A 6. tétel szerint az üzemi és pénzügyi eredmény összege adja a szokásos eredményt.",
+            hint: "Ez a 'normál' működés összesített eredménye."
+        },
+        {
+            question: "Mi a jellemzője a 'személyegyesítő' társaságoknak (pl. Kkt., Bt.)?",
+            options: ["A tagok személyes közreműködése és felelőssége hangsúlyos.", "Csak nagyvállalatok számára alkalmas.", "Nincs bennük tőkebefektetés.", "A tulajdonosok névtelenek."],
+            correct: 0,
+            rationale: "A tőke mellett a tagok személye és munkája is kulcsfontosságú.",
+            hint: "A névben is benne van, hogy a személyek 'egyesülnek'."
+        },
+        {
+            question: "A piackutatás során mit jelent a 'PESTIS' elemzés?",
+            options: ["Egy fertőző betegség elleni védekezést.", "A makrokörnyezeti tényezők vizsgálatát.", "A versenytársak árainak elemzését.", "Belső munkafolyamatok ellenőrzését."],
+            correct: 1,
+            rationale: "Ez a modell segít megérteni a külső hatásokat, amikre a cégnek nincs közvetlen ráhatása.",
+            hint: "Politikai, Gazdasági, Társadalmi, Technológiai, Információs, Segítő (Jogi)."
+        },
+        {
+            question: "Mi a 'targetálás' célja az STP marketing folyamatában?",
+            options: ["A piac felosztása csoportokra.", "A legmegfelelőbb célcsoport(ok) kiválasztása.", "A termék árának meghatározása.", "Egy logó tervezése."],
+            correct: 1,
+            rationale: "A targetálás során dől el, mely szegmenseket akarja kiszolgálni a cég.",
+            hint: "Gondolj a célzásra (target)."
+        },
+        {
+            question: "Melyik állítás írja le helyesen a 'szekvenciális koordinációt'?",
+            options: ["Két munkatárs véletlenszerű beszélgetése.", "Amikor a folyamatok egymásra épülnek (pl. takarítás után ellenőrzés).", "Amikor minden részleg egyszerre beszél.", "A vendégeknek küldött e-mail."],
+            correct: 1,
+            rationale: "Az egyik részleg kimenete a másik részleg bemenete (egymás utáni sorrend).",
+            hint: "Gondolj a sorrendre (szekvencia)."
+        },
+        {
+            question: "A vállalkozás indításakor miért fontos a 'validálás' folyamata?",
+            options: ["Hogy legyen pecsétünk az államtól.", "Hogy bizonyítsuk: valós piaci igény van a termékre.", "Hogy kifizessük a béreket.", "Hogy elrejtsük az ötletet."],
+            correct: 1,
+            rationale: "A validálás célja a kockázatcsökkentés és a feltételezések igazolása a piacon.",
+            hint: "Gondolj az igények és a fizetési hajlandóság tesztelésére."
+        },
+        {
+            question: "A családi vállalkozásoknál mit nevezünk 'családi alkotmánynak'?",
+            options: ["A cég alapító okiratát.", "Egy írásos megállapodást a család és üzlet kapcsolatáról.", "A legidősebb tag végrendeletét.", "Iskolai bizonyítványok gyűjteményét."],
+            correct: 1,
+            rationale: "Segít kezelni a konfliktusokat és rögzíti például a családtagok belépési feltételeit.",
+            hint: "Ez egy etikai és működési keretrendszer."
+        },
+        {
+            question: "Melyik mutató fejezi ki a szálloda egy kiadható szobára jutó átlagos árbevételét?",
+            options: ["ADR", "RevPAR", "ROI", "GOP"],
+            correct: 1,
+            rationale: "A RevPAR a legfontosabb mutató, mert ötvözi az árat és a foglaltságot.",
+            hint: "Revenue Per Available Room."
+        },
+        {
+            question: "Melyik vállalati forma esetén NEM válik el a magánvagyon és a vállalkozói vagyon?",
+            options: ["Egyéni vállalkozás", "Egyszemélyes Kft.", "Részvénytársaság", "Szövetkezet"],
+            correct: 0,
+            rationale: "Az egyéni vállalkozó a teljes magánvagyonával felel a tartozásokért.",
+            hint: "Gondolj a legegyszerűbb formára."
+        },
+        {
+            question: "Mi a marketingkommunikáció elsődleges célja a validálás szakaszában?",
+            options: ["Azonnali tömeges eladás.", "Információgyűjtés és fogyasztói reakciók megértése.", "Konkurencia tönkretétele.", "Országos márkaépítés."],
+            correct: 1,
+            rationale: "Ilyenkor teszteljük, hogy melyik üzenetre hogyan reagálnak a vevők.",
+            hint: "Nem a reklámozás a fő cél, hanem a tanulás."
+        },
+        {
+            question: "Melyik terület tartozik a szállodamenedzsment 'stratégiai' feladatai közé?",
+            options: ["A napi reggeli előkészítése.", "Hosszú távú árképzés és piaci pozicionálás.", "Csap megjavítása.", "Pult letakarítása."],
+            correct: 1,
+            rationale: "A stratégiai döntések a jövőbeli irányokat határozzák meg.",
+            hint: "Gondolj a hosszú távú célokra."
+        },
+        {
+            question: "Mi az 'emberi tőke' fogalmának lényege?",
+            options: ["A bankszámlán lévő pénz.", "A munkavállalók tudása, tapasztalata és képessége.", "Az irodabútorok.", "A tulajdonos családfája."],
+            correct: 1,
+            rationale: "Ez az az érték, ami beruházással (képzéssel) növelhető és profitot termel.",
+            hint: "Gondolj arra, amit a fejedben hordozol."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let isAnswered = false;
+
+    const app = document.getElementById('app');
+
+    function renderStartScreen() {
+        app.innerHTML = `
+            <div class="bg-white rounded-3xl shadow-xl p-8 text-center animate-fade-in border border-slate-200">
+                <div class="w-20 h-20 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="brain" class="w-10 h-10 text-indigo-600"></i>
+                </div>
+                <h1 class="text-3xl font-extrabold text-slate-800 mb-4">Vállalkozásvezetés Kvíz</h1>
+                <p class="text-slate-600 mb-8 leading-relaxed">30 kérdés a 4-13. tételek alapján. Készen állsz a vizsgára?</p>
+                <button onclick="startQuiz()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 group">
+                    Kezdés <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </div>
+        `;
+        lucide.createIcons();
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        isAnswered = false;
+        const q = quizData[currentQuestionIndex];
+        const progress = ((currentQuestionIndex + 1) / quizData.length) * 100;
+
+        app.innerHTML = `
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-200 animate-fade-in">
+                <div class="h-2 w-full bg-slate-100">
+                    <div class="h-full bg-indigo-500 transition-all duration-500" style="width: ${progress}%"></div>
+                </div>
+                <div class="p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Kérdés ${currentQuestionIndex + 1} / ${quizData.length}</span>
+                        <span class="text-sm font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Pontszám: ${score}</span>
+                    </div>
+                    
+                    <h2 class="text-xl font-bold text-slate-800 mb-8 leading-snug">${q.question}</h2>
+
+                    <div id="options-container" class="space-y-3">
+                        ${q.options.map((opt, i) => `
+                            <button onclick="handleAnswer(${i})" class="option-btn w-full p-4 text-left rounded-xl border-2 border-slate-100 hover:border-indigo-200 hover:bg-slate-50 transition-all font-medium text-slate-700 flex justify-between items-center">
+                                <span>${opt}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <div id="feedback" class="mt-6 hidden">
+                        <div id="feedback-box" class="p-4 rounded-xl mb-6">
+                            <p id="feedback-text" class="text-sm leading-relaxed"></p>
+                        </div>
+                        <button onclick="nextQuestion()" class="w-full py-4 bg-slate-900 hover:bg-black text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2">
+                            ${currentQuestionIndex === quizData.length - 1 ? 'Eredmények megtekintése' : 'Következő kérdés'} 
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                    <div id="hint-section" class="mt-4 text-center">
+                         <button id="hint-btn" onclick="toggleHint()" class="text-xs text-indigo-400 hover:text-indigo-600 font-semibold underline underline-offset-4 decoration-indigo-200">Kell egy kis segítség?</button>
+                         <p id="hint-text" class="hidden text-xs text-slate-400 mt-2 italic px-4"></p>
+                    </div>
+                </div>
+            </div>
+        `;
+        lucide.createIcons();
+    }
+
+    function handleAnswer(index) {
+        if (isAnswered) return;
+        isAnswered = true;
+        
+        const q = quizData[currentQuestionIndex];
+        const buttons = document.querySelectorAll('.option-btn');
+        const feedback = document.getElementById('feedback');
+        const feedbackBox = document.getElementById('feedback-box');
+        const feedbackText = document.getElementById('feedback-text');
+        const hintBtn = document.getElementById('hint-btn');
+
+        hintBtn.classList.add('hidden');
+        
+        buttons.forEach((btn, i) => {
+            btn.disabled = true;
+            if (i === q.correct) {
+                btn.classList.replace('border-slate-100', 'border-green-500');
+                btn.classList.add('bg-green-50', 'text-green-800');
+                btn.innerHTML += '<i data-lucide="check-circle-2" class="w-5 h-5 text-green-600"></i>';
+            } else if (i === index) {
+                btn.classList.replace('border-slate-100', 'border-red-500');
+                btn.classList.add('bg-red-50', 'text-red-800');
+                btn.innerHTML += '<i data-lucide="x-circle" class="w-5 h-5 text-red-600"></i>';
+            } else {
+                btn.classList.add('opacity-50');
+            }
+        });
+
+        if (index === q.correct) {
+            score++;
+            feedbackBox.classList.add('bg-green-50', 'border', 'border-green-100');
+            feedbackText.innerHTML = `<strong>Helyes!</strong> ${q.rationale}`;
+        } else {
+            feedbackBox.classList.add('bg-red-50', 'border', 'border-red-100');
+            feedbackText.innerHTML = `<strong>Sajnos nem...</strong> ${q.rationale}`;
+        }
+
+        feedback.classList.remove('hidden');
+        lucide.createIcons();
+    }
+
+    function toggleHint() {
+        const text = document.getElementById('hint-text');
+        const q = quizData[currentQuestionIndex];
+        text.innerText = q.hint;
+        text.classList.toggle('hidden');
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            renderQuestion();
+        } else {
+            renderResult();
+        }
+    }
+
+    function renderResult() {
+        const percent = Math.round((score / quizData.length) * 100);
+        let message = "";
+        let colorClass = "";
+
+        if (percent >= 90) { message = "Kiváló! Profi vagy!"; colorClass = "text-green-600"; }
+        else if (percent >= 70) { message = "Nagyon jó eredmény!"; colorClass = "text-indigo-600"; }
+        else if (percent >= 50) { message = "Sikeres, de érdemes még ismételni."; colorClass = "text-yellow-600"; }
+        else { message = "Ezt még gyakorolni kell!"; colorClass = "text-red-600"; }
+
+        app.innerHTML = `
+            <div class="bg-white rounded-3xl shadow-xl p-8 text-center animate-fade-in border border-slate-200">
+                <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="trophy" class="w-10 h-10 text-yellow-600"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold text-slate-800 mb-2">Szép munka!</h2>
+                <p class="${colorClass} font-bold mb-8">${message}</p>
+                
+                <div class="bg-slate-50 rounded-2xl p-8 mb-8 border border-slate-100">
+                    <div class="text-xs text-slate-400 uppercase font-black tracking-widest mb-2">Végső eredményed</div>
+                    <div class="text-6xl font-black text-slate-800">
+                        ${score} <span class="text-2xl text-slate-300 font-normal">/ ${quizData.length}</span>
+                    </div>
+                    <div class="mt-4 text-sm font-semibold text-slate-500">${percent}%-os teljesítmény</div>
+                </div>
+
+                <button onclick="startQuiz()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i> Újrakezdés
+                </button>
+            </div>
+        `;
+        lucide.createIcons();
+    }
+
+    // Indítás
+    renderStartScreen();
+</script>
+
+</body>
+</html>
